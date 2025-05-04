@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CV_TarrenJohnson_JoelCocks_</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Normalize or reset CSS with your favorite library -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css"
+    />
+
+    <!-- Load paper.css for happy printing -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css"
+    />
+
+    <!-- Set page size here: A5, A4 or A3 -->
+    <!-- Set also "landscape" if you need -->
+    <style>
+      @page {
+        size: A4 landscape;
+      }
+      body.A4.landscape .sheet {
+        box-shadow: none;
+        height: 197mm;
+      }
+
+      p {
+        font-size: 7px;
+        line-height: 10px;
+        margin: 0;
+      }
+      img {
+        max-height: 27mm;
+        margin-bottom: 60px;
+      }
+      .sheet {
+        padding: 0;
+      }
+      b {
+        /*font-family: arial;
+  font-size: 10px;*/
+      }
+      form {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: gainsboro;
+      }
+
+      input {
+        padding: 3px 10px;
+        font-size: 14px;
+        border-radius: 3px;
+        outline: none;
+        border: none;
+        margin: 3px;
+        background: white;
+        border: 1px solid rgb(102, 102, 102);
+      }
+      input::placeholder {
+        color: black;
+      }
+      input.error::placeholder {
+        color: red;
+      }
+      button {
+        text-shadow: 0px 3px 4px rgba(0, 0, 0, 0.5);
+        padding: 3px 10px;
+        font-size: 14px;
+        border-radius: 4px;
+        outline: none;
+        border: none;
+        margin: 3px;
+        background: linear-gradient(
+          to top,
+          white,
+          rgb(233, 233, 233) 14.71%,
+          rgb(201, 201, 201) 80.67%,
+          white
+        );
+        color: black;
+        box-shadow: 0 2px 4px rgb(59, 59, 59);
+      }
+
+      .left,
+      .right {
+        width: calc(50% - 15mm - 1px);
+        height: 100%;
+        position: relative;
+        float: left;
+        display: block;
+
+        padding: 7.5mm;
+      }
+
+      .left {
+        text-align: left;
+      }
+
+      .middle {
+        width: 1px;
+        height: 100%;
+        float: left;
+        position: relative;
+      }
+      .middle .inner {
+        background: rgba(0, 0, 0, 0.1);
+        width: 100%;
+        height: 95%;
+        float: left;
+        top: 5%;
+        position: absolute;
+        left: 0;
+      }
+
+      .sheet {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <!-- Set "A5", "A4" or "A3" for class name -->
+  <!-- Set also "landscape" if you need -->
+  <body class="A4 landscape">
+    <form>
+      <input class="code" type="password" placeholder="Enter the code" />
+      <button>Unlock</button>
+    </form>
+
+    <section class="sheet">
+      <article class="left"></article>
+      <article class="middle"><div class="inner"></div></article>
+      <article class="right"></article>
+    </section>
+  </body>
+  <script>
+    document.title = document.title + new Date().getFullYear();
+
+    const left = document.querySelector(".left");
+    const right = document.querySelector(".right");
+
+    const init = (wheretogetdata, sheet, side) => {
+      fetch(wheretogetdata + sheet)
+        .then((res) => res.json())
+        .then((data) => {
+          document.querySelector(".sheet").style.display = "block";
+
+          // honey pot
+          function reverseString(str) {
+            var newString = "";
+            for (var i = str.length - 1; i >= 0; i--) {
+              newString += str[i];
+            }
+            return newString;
+          }
+
+          for (var i = 0; i < data.length; i++) {
+            if (i === 0) {
+              const name = data[i]["name"];
+              const send = data[i]["send"];
+              const provider = data[i]["provider"];
+              const photoURL = data[i]["photoURL"];
+              const domain = data[i]["domain"] === "c" ? "com" : "info";
+
+              const lineBreak = document.createElement("br");
+              const image = document.createElement("img");
+              image.src = photoURL;
+
+              const nameEl = document.createElement("p");
+              nameEl.innerHTML = name;
+              const sendEl = document.createElement("p");
+              sendEl.innerHTML =
+                send + "&#64" + reverseString(provider) + "." + domain;
+
+              side.append(image);
+              side.append(nameEl);
+              side.append(sendEl);
+              side.append(lineBreak);
+            }
+
+            if (!data[i]["year"]) {
+              const br = document.createElement("br");
+              side.append(br);
+            } else {
+              const cvEntry = document.createElement("p");
+
+              const year = data[i]["year"] ? `${data[i]["year"]}  ` : ``;
+              const title = data[i]["title"]
+                ? `<em>${data[i]["title"]}</em>, `
+                : ``;
+              const artist = data[i]["artist"] ? `${data[i]["artist"]}, ` : ``;
+              const festivalOrProgram = data[i]["festivalOrProgram"]
+                ? `Part of ${data[i]["festivalOrProgram"]}, `
+                : ``;
+              const institution = data[i]["institution"]
+                ? `${data[i]["institution"]}, `
+                : ``;
+              const city = data[i]["city"] ? `${data[i]["city"]}` : ``;
+              const myRole = data[i]["myRole"] ? `${data[i]["myRole"]}; ` : ``;
+
+              cvEntry.innerHTML =
+                year +
+                institution +
+                myRole +
+                title +
+                artist +
+                festivalOrProgram +
+                city;
+              side.append(cvEntry);
+            }
+          }
+        });
+    };
+
+    const code = document.querySelector(".code");
+    const form = document.querySelector("form");
+    form.style.display = "block";
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      $.ajax({
+        url: "../code.php",
+        type: "POST",
+        dataType: "text",
+        data: { data: [code.value, "x"] },
+        success: function (response) {
+          console.log(response);
+          if (response === "Incorrect code" || response === "Unknown episode") {
+            code.value = "";
+            code.classList.add("error");
+            code.placeholder = "Code incorrect";
+            code.blur();
+            setTimeout(() => {
+              code.placeholder = "Enter the code";
+              code.classList.remove("error");
+            }, 1000);
+          } else {
+            init(response, "CV", left);
+            init(response, "CVJoel", right);
+
+            form.remove();
+          }
+        },
+      });
+    });
+  </script>
+</html>

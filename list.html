@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WorkList_TarrenJohnson</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css"
+    />
+    <style>
+      @page {
+        size: A4;
+      }
+      body {
+        font-family: arial, sans-serif;
+        font-weight: normal;
+      }
+      .sheet {
+        padding: 10mm 25mm 10mm 4mm;
+      }
+      .entry {
+        display: flex;
+        margin-bottom: 0px;
+      }
+      .year {
+        width: 30px;
+        font-size: 11px;
+
+        text-transform: uppercase;
+      }
+      .details {
+        flex: 1;
+        padding-left: 10px;
+      }
+      .details p {
+        margin: 0;
+      }
+
+      p {
+        font-size: 10px;
+        line-height: 1.1;
+        margin: 0;
+        text-align: left;
+      }
+
+      img {
+        max-width: 30mm;
+        margin-bottom: 120px;
+      }
+
+      form {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: gainsboro;
+      }
+      input {
+        padding: 3px 10px;
+        font-size: 14px;
+        border-radius: 3px;
+        outline: none;
+        border: none;
+        margin: 3px;
+        background: white;
+        border: 1px solid rgb(102, 102, 102);
+      }
+      input::placeholder {
+        color: black;
+      }
+      input.error::placeholder {
+        color: red;
+      }
+      button {
+        padding: 3px 10px;
+        font-size: 14px;
+        border-radius: 4px;
+        outline: none;
+        border: none;
+        margin: 3px;
+        background: linear-gradient(
+          to top,
+          white,
+          rgb(233, 233, 233) 14.71%,
+          rgb(201, 201, 201) 80.67%,
+          white
+        );
+        color: black;
+        box-shadow: 0 2px 4px rgb(59, 59, 59);
+      }
+      .section-title {
+        font-size: 10px;
+
+        margin-top: 10px;
+        margin-left: 40px;
+        padding-bottom: 3px;
+        padding-top: 3px;
+        margin-bottom: 10px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px dashed black;
+      }
+    </style>
+  </head>
+
+  <body class="A4">
+    <form>
+      <input class="code" type="password" placeholder="Enter the code" />
+      <button>Unlock</button>
+    </form>
+  </body>
+
+  <script>
+    document.title = document.title + new Date().getFullYear();
+
+    const init = (wheretogetdata) => {
+      fetch(wheretogetdata + "WorkList")
+        .then((res) => res.json())
+        .then((data) => {
+          const body = document.querySelector("body");
+          const section = document.createElement("section");
+          section.classList.add("sheet");
+          body.append(section);
+
+          const typesOrder = [
+            "Solo Exhibition",
+            "Group Exhibition",
+            "Screening",
+            "Performance",
+            "Residency",
+          ];
+          typesOrder.forEach((type) => {
+            const typeEntries = data.filter((row) => row.Type === type);
+
+            if (typeEntries.length) {
+              const typeHeader = document.createElement("div");
+              typeHeader.className = "section-title";
+              typeHeader.textContent = type + "s";
+              section.append(typeHeader);
+
+              let lastYear = ""; // Track last year displayed to avoid repeats
+
+              typeEntries.forEach((row) => {
+                const entry = document.createElement("div");
+                entry.className = "entry";
+
+                // Display year only if it's different from the last entry's year
+                const year =
+                  row["Year"] !== lastYear
+                    ? `<div class="year">${row["Year"] || ""}</div>`
+                    : '<div class="year"></div>';
+                lastYear = row["Year"];
+
+                // Build details section
+                const title = row["Title"] ? `<em>${row["Title"]}</em>` : "";
+                const artist = row["Artist"] ? `${row["Artist"]}` : "";
+                const dates = row["Dates"] ? `${row["Dates"]}` : "";
+                const location = row["Location"] ? `${row["Location"]}` : "";
+                const city = row["City"] ? `${row["City"]}` : "";
+                const country = row["Country"] ? `${row["Country"]}` : "";
+                const eventOrFest = row["EventOrFest"]
+                  ? `Part of ${row["EventOrFest"]}`
+                  : "";
+                const collaborators = row["Collaborators"]
+                  ? `${row["Collaborators"]}`
+                  : "";
+
+                // Concatenate entry details
+                const formattedDetails = [
+                  title,
+                  artist,
+                  dates,
+                  location,
+                  city,
+                  country,
+                  eventOrFest,
+                  collaborators,
+                ]
+                  .filter(Boolean)
+                  .join(", ");
+
+                entry.innerHTML = `${year}<div class="details"><p>${formattedDetails}</p></div>`;
+                section.append(entry);
+              });
+            }
+          });
+        });
+    };
+    const code = document.querySelector(".code");
+    const form = document.querySelector("form");
+    form.style.display = "block";
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      $.ajax({
+        url: "./code.php",
+        type: "POST",
+        dataType: "text",
+        data: { data: [code.value, "x"] },
+        success: function (response) {
+          if (response.startsWith("http")) {
+            init(response);
+            form.remove();
+          } else {
+            code.value = "";
+            code.classList.add("error");
+            code.placeholder = "Code incorrect";
+            setTimeout(() => {
+              code.placeholder = "Enter the code";
+              code.classList.remove("error");
+            }, 1000);
+          }
+        },
+      });
+    });
+  </script>
+</html>

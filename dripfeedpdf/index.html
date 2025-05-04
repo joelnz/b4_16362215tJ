@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Portfolio_TarrenJohnson_JoelCocks_</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Normalize or reset CSS with your favorite library -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css"
+    />
+
+    <!-- Load paper.css for happy printing -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css"
+    />
+
+    <!-- Set page size here: A5, A4 or A3 -->
+    <!-- Set also "landscape" if you need -->
+    <style>
+      @page {
+        size: A4 landscape;
+      }
+
+      @media screen {
+        body {
+          background: white;
+        }
+      }
+
+      body.A4.landscape .sheet {
+        box-shadow: none;
+        height: 197mm;
+      }
+
+      form {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: gainsboro;
+      }
+
+      span {
+        display: block;
+      }
+      input {
+        padding: 3px 10px;
+        font-size: 14px;
+        border-radius: 3px;
+        outline: none;
+        border: none;
+        margin: 3px;
+        background: white;
+        border: 1px solid rgb(102, 102, 102);
+      }
+      input::placeholder {
+        color: black;
+      }
+      input.error::placeholder {
+        color: red;
+      }
+      button {
+        text-shadow: 0px 3px 4px rgba(0, 0, 0, 0.5);
+        padding: 3px 10px;
+        font-size: 14px;
+        border-radius: 4px;
+        outline: none;
+        border: none;
+        margin: 3px;
+        background: linear-gradient(
+          to top,
+          white,
+          rgb(233, 233, 233) 14.71%,
+          rgb(201, 201, 201) 80.67%,
+          white
+        );
+        color: black;
+        box-shadow: 0 2px 4px rgb(59, 59, 59);
+      }
+      .left,
+      .right {
+        width: calc(50% - 1px);
+        height: 100%;
+        position: relative;
+        float: left;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        line-height: 19px;
+      }
+
+      e {
+        font-style: italic !important;
+      }
+
+      .left {
+        text-align: center;
+      }
+
+      .middle {
+        width: 1px;
+        height: 100%;
+        float: left;
+        position: relative;
+      }
+      .middle .inner {
+        background: rgba(0, 0, 0, 0.1);
+        width: 100%;
+        height: 95%;
+        float: left;
+        top: 5%;
+        position: absolute;
+        left: 0;
+      }
+      .right {
+      }
+      .full-page {
+        width: calc(100% - 1px);
+      }
+
+      .full-page img {
+        max-width: 90%;
+      }
+
+      .full-page + .middle .inner {
+        background: white;
+      }
+
+      .two-images {
+        width: 148mm;
+        height: 80mm;
+        margin-top: 3mm;
+        display: flex;
+        align-items: center;
+        /* background: red; */
+        justify-content: center;
+      }
+      .two-images:first-child {
+        margin-top: 21mm;
+      }
+
+      .three-images {
+        width: 41%;
+        height: 100%;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+      }
+      .two-images img,
+      .three-images img {
+        max-height: 100%;
+        max-width: 85%;
+      }
+
+      label {
+        position: absolute;
+        bottom: 0%;
+        left: 10%;
+        text-align: left;
+        width: 90%;
+        font-size: 8px;
+        line-height: 8px;
+        color: black;
+        width: 75%;
+      }
+      .full-page label {
+        text-align: center;
+        left: 0%;
+        width: 100%;
+      }
+      img {
+        max-width: 80%;
+        max-height: 80%;
+      }
+
+      p {
+        padding: 10%;
+        white-space: break-spaces;
+      }
+    </style>
+  </head>
+
+  <body class="A4 landscape">
+    <form>
+      <input class="code" type="password" placeholder="Enter the code" />
+      <button>Unlock</button>
+    </form>
+  </body>
+
+  <script>
+    document.title = document.title + new Date().getFullYear();
+
+    const init = (wheretogetdata) => {
+      fetch(wheretogetdata + "dripfeedPDF")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          for (var i = 0; i < data.length; i++) {
+            if (data[i]["visible"] !== "n") {
+              const body = document.querySelector("body");
+
+              const section = document.createElement("section");
+              const left = document.createElement("article");
+              const right = document.createElement("article");
+              const middle = document.createElement("article");
+              const middleInner = document.createElement("div");
+
+              section.classList = "sheet";
+              left.classList = "left";
+              right.classList = "right";
+              middle.classList = "middle";
+              middleInner.classList = "inner";
+
+              body.append(section);
+              section.append(left);
+              section.append(middle);
+              middle.append(middleInner);
+              if (data[i]["leftText"]) {
+                if (data[i]["leftText"].length > 200) {
+                  left.innerHTML =
+                    '<p style="text-align:left">' +
+                    data[i]["leftText"] +
+                    "</p>";
+                } else {
+                  left.innerHTML = "<p>" + data[i]["leftText"] + "</p>";
+                }
+              } else if (data[i]["leftImageURL"]) {
+                if (data[i]["leftImageURL"].includes(",")) {
+                  const imageArray = data[i]["leftImageURL"].split(",");
+                  console.log(imageArray);
+                  if (imageArray.length === 2) {
+                    left.style.display = "inline-block";
+                    const leftImg1 = document.createElement("img");
+                    const imgWrapper1 = document.createElement("div");
+                    leftImg1.src = imageArray[0];
+                    imgWrapper1.classList = "two-images";
+                    left.append(imgWrapper1);
+                    imgWrapper1.append(leftImg1);
+                    const leftImg2 = document.createElement("img");
+                    const imgWrapper2 = document.createElement("div");
+                    imgWrapper2.classList = "two-images";
+                    leftImg2.src = imageArray[1];
+                    left.append(imgWrapper2);
+                    imgWrapper2.append(leftImg2);
+                  } else if (imageArray.length === 3) {
+                    // 3 image
+                    left.style.display = "inline-block";
+                    const leftImg1 = document.createElement("img");
+                    const imgWrapper1 = document.createElement("div");
+                    leftImg1.src = imageArray[0];
+                    imgWrapper1.classList = "two-images";
+                    left.append(imgWrapper1);
+                    imgWrapper1.append(leftImg1);
+
+                    const imgWrapper2 = document.createElement("div");
+                    imgWrapper2.classList = "two-images";
+
+                    const imgWrapper3 = document.createElement("div");
+                    imgWrapper3.classList = "three-images";
+                    const imgWrapper4 = document.createElement("div");
+                    imgWrapper4.classList = "three-images";
+                    const leftImg2 = document.createElement("img");
+                    const leftImg3 = document.createElement("img");
+                    leftImg2.src = imageArray[1];
+                    leftImg3.src = imageArray[2];
+
+                    left.append(imgWrapper2);
+                    imgWrapper2.append(imgWrapper3);
+                    imgWrapper2.append(imgWrapper4);
+                    imgWrapper3.append(leftImg2);
+                    imgWrapper4.append(leftImg3);
+                  } else if (imageArray.length === 4) {
+                    // 4 image
+                  }
+                } else {
+                  // one image
+                  const leftImg = document.createElement("img");
+                  leftImg.src = data[i]["leftImageURL"];
+                  left.append(leftImg);
+                }
+
+                if (data[i]["leftCaption"]) {
+                  const leftCaption = document.createElement("label");
+                  leftCaption.innerHTML = data[i]["leftCaption"];
+                  left.append(leftCaption);
+
+                  if (!data[i]["rightImageURL"] && !data[i]["rightText"]) {
+                    left.classList.add("full-page");
+                  }
+                }
+              }
+
+              if (data[i]["rightText"] || data[i]["rightImageURL"]) {
+                section.append(right);
+              }
+
+              if (data[i]["rightText"]) {
+                right.innerHTML = "<p>" + data[i]["rightText"] + "</p>";
+              } else if (data[i]["rightImageURL"]) {
+                if (data[i]["rightImageURL"].includes(",")) {
+                  const imageArray = data[i]["rightImageURL"].split(",");
+                  console.log(imageArray);
+                  if (imageArray.length === 2) {
+                    right.style.display = "inline-block";
+                    const rightImg1 = document.createElement("img");
+                    const imgWrapper1 = document.createElement("div");
+                    rightImg1.src = imageArray[0];
+                    imgWrapper1.classList = "two-images";
+                    right.append(imgWrapper1);
+                    imgWrapper1.append(rightImg1);
+                    const rightImg2 = document.createElement("img");
+                    const imgWrapper2 = document.createElement("div");
+                    imgWrapper2.classList = "two-images";
+                    rightImg2.src = imageArray[1];
+                    right.append(imgWrapper2);
+                    imgWrapper2.append(rightImg2);
+                  } else if (imageArray.length === 3) {
+                    // 3 image
+                    right.style.display = "inline-block";
+                    const rightImg1 = document.createElement("img");
+                    const imgWrapper1 = document.createElement("div");
+                    rightImg1.src = imageArray[0];
+                    imgWrapper1.classList = "two-images";
+                    right.append(imgWrapper1);
+                    imgWrapper1.append(rightImg1);
+
+                    const imgWrapper2 = document.createElement("div");
+                    imgWrapper2.classList = "two-images";
+
+                    const imgWrapper3 = document.createElement("div");
+                    imgWrapper3.classList = "three-images";
+                    const imgWrapper4 = document.createElement("div");
+                    imgWrapper4.classList = "three-images";
+                    const rightImg2 = document.createElement("img");
+                    const rightImg3 = document.createElement("img");
+                    rightImg2.src = imageArray[1];
+                    lrightImg3.src = imageArray[2];
+
+                    right.append(imgWrapper2);
+                    imgWrapper2.append(imgWrapper3);
+                    imgWrapper2.append(imgWrapper4);
+                    imgWrapper3.append(rightImg2);
+                    imgWrapper4.append(rightImg3);
+                  } else if (imageArray.length === 4) {
+                    // 4 image
+                  }
+                } else {
+                  // one image
+                  const rightImg = document.createElement("img");
+                  rightImg.src = data[i]["rightImageURL"];
+                  right.append(rightImg);
+                }
+
+                if (data[i]["rightCaption"]) {
+                  const rightCaption = document.createElement("label");
+                  rightCaption.innerHTML = data[i]["rightCaption"];
+                  right.append(rightCaption);
+                }
+              }
+            }
+          }
+        });
+    };
+
+    const code = document.querySelector(".code");
+    const form = document.querySelector("form");
+    form.style.display = "block";
+
+    const ajaxRequest = (code) => {
+      $.ajax({
+        url: "../code.php",
+        type: "POST",
+        dataType: "text",
+        data: { data: [code, "x"] },
+        success: function (response) {
+          if (response === "Incorrect code" || response === "Unknown episode") {
+            code.value = "";
+            code.classList.add("error");
+            code.placeholder = "Code incorrect";
+            code.blur();
+            setTimeout(() => {
+              code.placeholder = "Enter the code";
+              code.classList.remove("error");
+            }, 1000);
+          } else {
+            init(response);
+            form.remove();
+          }
+        },
+      });
+    };
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      ajaxRequest(code.value);
+    });
+  </script>
+</html>

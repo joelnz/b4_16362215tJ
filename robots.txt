@@ -1,0 +1,10 @@
+# www.robotstxt.org/
+
+
+User-agent: *
+Disallow: /archived/
+Disallow: /help/
+Disallow: /photos/
+Disallow: /cv-joel/
+Disallow: /cv-both/
+Disallow: /portfolio/

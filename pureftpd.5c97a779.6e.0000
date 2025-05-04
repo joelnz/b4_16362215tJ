@@ -1,0 +1,206 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Tarren Johnson - Choreographer / Artist </title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    header, .box{
+      	border: 1px solid transparent;
+      width: 900px;
+      height: 200px;
+      left: 50%;
+      margin-left: -450px;
+     position: relative;
+      display: block;
+      margin-top: 15px;
+          background: white;
+    }
+    nav{
+      height: 34px;
+      position: absolute;
+      bottom: 0px;
+      left: 5px;
+    font-size: 14px;
+    font-family: helvetica;
+      width: 27%;
+      text-align: left;
+      color: gray;
+      text-transform: lowercase;
+      line-height: 15px;
+    
+
+    }
+
+    .beforeclick{
+        text-decoration: underline;
+    }
+    .beforeclick:hover{
+       cursor: pointer;
+      color: red;
+    }
+ 
+    .d{
+      bottom: 20px;
+    }
+    .c{
+     
+      bottom: 10px;
+      left: 10px;
+      
+font-family: times;
+height: 20px;
+position: fixed;
+text-align: left;
+z-index: 9999;
+font-size: 14px;
+width: auto;
+
+
+    }
+    .c a,.c a:visited{
+    	color: blue;
+    	text-decoration: underline;
+
+    }
+    img{
+    
+      width: 100%;
+margin: 0px 0;
+   
+    }
+    .post{
+position: relative;
+   margin-top:30px;
+      margin-bottom:30px;
+      left: 50%;
+      width: 400px;
+      height: auto;
+      margin-left: -200px;
+      display: block;
+    }
+    .big{
+      width: 900px;
+      margin-left: -450px;
+    }
+    a, a:visited{
+    	color: black;
+    	text-decoration: none;
+    }
+
+    @media only screen and (max-width: 600px) {
+    .post {
+    	width: 98%;
+    	margin-left: -49%;
+    	margin-top: 100px;
+    	margin-bottom: 100px;
+       
+    }
+    .box, header{
+  	width: 98%;
+    	margin-left: -49%;
+    	height: 200px;
+    	border: 1px solid transparent;
+
+    }
+    nav{
+    	width: 98%;
+    	text-align: left;
+    	padding-left:2%; 
+      
+    	
+    }
+ 
+  </style>
+</head>
+
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+  <header>
+    <nav class="beforeclick">Tarren Johnson</nav>
+
+       <nav class="c"> <a href="http://www.dripfeed.tv">watch dripfeed >></a></nav>
+ 
+
+  </header>
+
+
+
+
+<!--<div class="box"></div>-->
+
+
+
+
+
+  <div class="post"> <img src="tarren_johnson_dripfeed.png" style="width:200px">
+
+ 
+
+</div>
+<!--<div class="box"></div>-->
+  <div class="post big">
+    <img src="tarrenjohnson.png" style="width:200px"><br>
+   <!-- <img src="https://c2.staticflickr.com/2/1801/29024371848_f95fa4fc09_o.jpg">-->
+
+</div>
+<!--<div class="box"></div>-->
+
+<div class="post">
+   
+    <img style="width: 100px" src="51989687_2099725176783788_8370672113492688896_n.png"><br><img style="width: 100px" src="tarrenjohnson2.png" ><br>
+ 
+</div>
+  <div class="post">
+    <br><br><br><br><br>
+  <img src="cleft_tarren_johnson.jpg" style="width: 300px" ><br>
+ 
+</div>
+
+
+
+<!--<div class="box"></div>-->
+
+  <div class="posst big">
+    <!-- <img src="https://c2.staticflickr.com/2/1749/42178589134_1c27fd8da3_o.jpg">-->
+</div>
+
+
+
+  <script src="js/vendor/modernizr-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+  <script>
+
+$('nav').click(function(){
+
+  $(this).removeClass('beforeclick').append(' (b. 1990) is an American choreographer and artist. She works with performance, video, sculpture and writing.')
+})
+
+
+
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+
+</html>

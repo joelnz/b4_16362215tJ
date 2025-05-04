@@ -1,0 +1,664 @@
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tarren Johnson & Joel Cocks</title>
+    <meta name="description" content="✨✨✨✨" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Tarren Johnson & Joel Cocks" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://tarrenjohnson.info" />
+    <meta property="og:description" content="✨✨✨✨" />
+    <meta property="og:image" content="http://tarrenjohnson.info/ball3.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <div id="container">
+      <div class="loading-bar"></div>
+      <header class="website-header no-select"></header>
+      <main class="no-select"></main>
+      <div class="main-caption"> </div>
+      <div class="project-about"></div>
+      <div class="table-container non-fixed-height project-table-container">
+        <table class="project-table"></table>
+      </div>
+      <article></article>
+      <nav class="project-buttons"></nav>
+      <div class="credits-table-wrapper"></div>
+      <nav class="main-nav">
+        <div class="icon-wrapper dripfeed">
+          <label class="no-select">Dripfeed.tv</label>
+        </div>
+        <div class="icon-wrapper performance">
+          <label class="no-select">Work</label>
+        </div>
+      </nav>
+      <div class="table-container news-table-container non-fixed-height">
+        <table class="news-table">
+          <tr>
+            <td><b>***</b></td>
+            <td><b>News</b></td>
+          </tr>
+        </table>
+      </div>
+      <article class="about-contact">
+        <div class="about"></div>
+        <div class="contact"></div>
+      </article>
+      <nav class="single back-to-top">
+        <div class="icon-wrapper" onclick="scrollToTop()">
+          <img style="opacity: 0.9" src="" />
+          <label class="no-select">Back to Top</label>
+        </div>
+      </nav>
+      <footer class="no-select">
+        © Copyright 2016–<span></span>, Tarren Johnson & Joel Cocks
+      </footer>
+    </div>
+    <div class="gallery-background">
+      <header></header>
+      <div class="wall gallery-images"></div>
+    </div>
+
+    <script>
+      //-----------------------------------------------------------
+      // document constants
+      //-----------------------------------------------------------
+
+      const photosize = "z"; // res of images for gallery z = 500, c=800, b = 1024
+      const currentYear = new Date().getFullYear();
+
+      const loadingBar = document.querySelector(".loading-bar");
+      const container = document.querySelector("#container");
+      const newsTableContainer = document.querySelector(
+        ".news-table-container",
+      );
+      const newsTable = document.querySelector(".news-table");
+      const projectTableContainer = document.querySelector(
+        ".project-table-container",
+      );
+      const projectTable = document.querySelector(".project-table");
+      const creditsTable = document.querySelector(".credits-table-wrapper");
+      const header = document.querySelector("#container header");
+      const main = document.querySelector("main");
+      const mainCaption = document.querySelector(".main-caption");
+      const aboutContact = document.querySelector(".about-contact");
+      const about = aboutContact.querySelector(".about");
+      const contact = aboutContact.querySelector(".contact");
+      const nav = document.querySelector("nav.main-nav");
+      const article = document.querySelector("article");
+      const projectabout = document.querySelector(".project-about");
+      const projectButtons = document.querySelector(".project-buttons");
+      const backToTop = document.querySelector(".back-to-top");
+      const footer = document.querySelector("footer");
+      const galleryBackground = document.querySelector(".gallery-background");
+      const galleryHeader = document.querySelector(
+        ".gallery-background header",
+      );
+      const wall = document.querySelector(".wall");
+      const floor = document.querySelector(".floor");
+      const dripfeed = document.querySelector(".dripfeed");
+      const performance = document.querySelector(".performance");
+
+      //-----------------------------------------------------------
+      // Check if device is mobile
+      //-----------------------------------------------------------
+
+      const iPad =
+        navigator.userAgent.match(/Macintosh/i) &&
+        navigator.maxTouchPoints !== undefined &&
+        navigator.maxTouchPoints > 1;
+
+      const mobile = !!(
+        navigator.userAgent.match(/Android/i) ||
+        navigator.userAgent.match(/webOS/i) ||
+        navigator.userAgent.match(/iPhone/i) ||
+        navigator.userAgent.match(/iPad/i) ||
+        navigator.userAgent.match(/iPod/i) ||
+        navigator.userAgent.match(/BlackBerry/i) ||
+        navigator.userAgent.match(/Windows Phone/i) ||
+        iPad
+      );
+
+      const BASE_DATA_URL =
+        "https://opensheet.elk.sh/1DwFOetyRDInpAXXTM6YUhYr6dKyGFhi7rs_jEkuIOe8/";
+
+      //-----------------------------------------------------------
+      // confuse robots
+      //-----------------------------------------------------------
+
+      function reverseString(str) {
+        var newString = "";
+        for (var i = str.length - 1; i >= 0; i--) {
+          newString += str[i];
+        }
+        return newString;
+      }
+
+      //-----------------------------------------------------------
+      // Global Variables
+      //-----------------------------------------------------------
+
+      let initData;
+      let sectionData;
+      let section = "";
+      let currentSetID;
+      let loadingMessage;
+      let progress;
+      let current_progress = 0;
+      let step = 1.4; // the smaller the slower
+      let currentIndex = 0;
+
+      //-----------------------------------------------------------
+      // Scrolling Functions
+      //-----------------------------------------------------------
+
+      const scrollToTop = () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      };
+
+      const scrollToBottom = () => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      };
+
+      const scrollToNews = () => {
+        const newsTable = document.querySelector(".news-table");
+        window.scrollTo({
+          top: newsTable.getBoundingClientRect().top + window.pageYOffset - 15,
+          behavior: "smooth",
+        });
+      };
+
+      const jumpToTop = () => {
+        container.style.height = "100%";
+        container.style.overflow = "hidden";
+        scroll(0, 0);
+        container.style.height = "auto";
+        container.style.overflow = "auto";
+      };
+
+      const homepageImgLoadSequence = [
+        [header, "homeLogo", ""],
+        [main, "homeImage", "main-image"],
+        [dripfeed, "sectionOneIcon", ""],
+        [performance, "sectionTwoIcon", ""],
+      ];
+
+      //-----------------------------------------------------------
+      // Enable browser back buttons
+      //-----------------------------------------------------------
+
+      window.history.pushState({ page: 1 }, "", "");
+      window.onpopstate = function (event) {
+        if (event) {
+          document.querySelector(".website-header a").click();
+          window.history.pushState({ page: 1 }, "", "");
+        }
+      };
+
+      //-----------------------------------------------------------
+      // Loading bar
+      //-----------------------------------------------------------
+
+      const startLoading = () => {
+        loadingBar.style.width = "0%";
+        loadingBar.style.display = "block";
+        interval = setInterval(() => {
+          current_progress += step;
+          progress =
+            Math.round(
+              (Math.atan(current_progress) / (Math.PI / 2)) * 100 * 1000,
+            ) / 1000;
+          loadingBar.style.width = progress + "%";
+          if (progress >= 100) {
+            clearInterval(interval);
+          } else if (progress >= 70) {
+            step = 0.1;
+          }
+        }, 100);
+      };
+
+      const endLoading = () => {
+        clearInterval(interval);
+        loadingBar.style.width = "100%";
+        setTimeout(() => {
+          setTimeout(() => {
+            loadingBar.style.display = "none";
+            loadingBar.style.width = "0%";
+          }, 10);
+        }, 500);
+      };
+
+      //-----------------------------------------------------------
+      // Hiding page elements
+      //-----------------------------------------------------------
+
+      const hidePageElements = () => {
+        const elementsToHide = [
+          nav,
+          newsTableContainer,
+          main,
+          backToTop,
+          footer,
+          header,
+          aboutContact,
+        ];
+        elementsToHide.forEach((element) => {
+          element.style.display = "none";
+        });
+      };
+
+      //-----------------------------------------------------------
+      // Loading News
+      //-----------------------------------------------------------
+
+      const loadData = async (url) => {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+      };
+
+      const displayHomepageState = () => {
+        nav.style.display = "block";
+        newsTable.style.display = "block";
+        aboutContact.style.display = "block";
+        backToTop.style.display = "block";
+        footer.style.display = "block";
+        backToTop.querySelector("img").src = initData[0].backTopIcon;
+        footer.querySelector("span").innerHTML = currentYear;
+        main.innerHTML = `${main.innerHTML} <div class="scroll-prompt" onclick="scrollToNews()" >News ↓</div>`;
+      };
+
+      const loadNews = async () => {
+        try {
+          const data = await loadData(BASE_DATA_URL + "News");
+          data.forEach((row) => {
+            newsTable.innerHTML += `<tr><td class="no-select">${row.date}</td><td>${row.text}</td></tr>`;
+          });
+          endLoading();
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      const getRandomImageSrc = (imageName) => {
+        const images = initData[0][imageName].split(",");
+        return Math.random() >= 0.5 ? images[0] : images[1];
+      };
+
+      const getSrc = (imageName) => {
+        return initData[0][imageName].includes(",")
+          ? getRandomImageSrc(imageName)
+          : initData[0][imageName];
+      };
+
+      //-----------------------------------------------------------
+      // Loading the Home page
+      //-----------------------------------------------------------
+
+      const getDomain = () => (initData[0]["domain"] === "c" ? "com" : "info");
+      const getSend = () => initData[0]["send"];
+      const getProvider = () => initData[0]["provider"];
+      const updateMail = async () => {
+        const mailElement = contact.querySelector(".mail");
+        mailElement.innerHTML = `${getSend()} [𝒶𝓉] ${reverseString(getProvider())} [𝒹𝑜𝓉] ${getDomain()}`;
+      };
+
+      const updateAboutAndContact = async () => {
+        about.innerHTML = initData[0].about;
+        contact.innerHTML = initData[0].contact;
+      };
+
+      const afterHomeImagesLoaded = async () => {
+        await loadNews();
+        await updateAboutAndContact();
+        await updateMail();
+        if (section === "") {
+          // if we're loading homepage
+          displayHomepageState();
+        }
+      };
+
+      const createImgElement = (src) => {
+        const imgElement = document.createElement("img");
+        imgElement.src = src;
+        return imgElement;
+      };
+
+      const loadHomepageImgSequence = () => {
+        const [parentEl, rowHeaderName, classToAdd] =
+          homepageImgLoadSequence[currentIndex];
+        const imgElement = createImgElement(getSrc(rowHeaderName));
+        imgElement.onload = () => {
+          currentIndex++;
+          parentEl.prepend(imgElement);
+          if (classToAdd === "main-image") main.classList = classToAdd;
+          if (currentIndex === homepageImgLoadSequence.length)
+            afterHomeImagesLoaded();
+          else loadHomepageImgSequence();
+        };
+      };
+
+      //-----------------------------------------------------------
+      // Opening a Section
+      //-----------------------------------------------------------
+
+      const openSection = async (sheetsTabName) => {
+        window.location.hash = sheetsTabName;
+        startLoading();
+        hidePageElements();
+        jumpToTop();
+        const response = await fetch(BASE_DATA_URL + sheetsTabName);
+        const data = await response.json();
+        sectionData = data;
+        section = sheetsTabName;
+        const { sectionName, sectionIcon, backTopIcon, sectionInfo } = data[0];
+        const projects = data.filter((row) => row.published !== "no");
+        const numberOfPublishedProjects = projects.length;
+        header.innerHTML = `<a onclick='backToHomepage()'><</a> <h1 class='no-select'>${sectionName}</h1>`;
+        main.innerHTML = `<img class="main-image" src="${sectionIcon}">`;
+        main.style.display = "flex";
+        header.style.display = "flex";
+        main.classList = "chapter-image";
+        article.innerHTML = sectionInfo;
+        article.style.display = "block";
+        creditsTable.style.display = "block";
+        footer.style.display = "block";
+        projects.forEach((row, id) => {
+          const first = id === 0 ? "first" : "";
+          creditsTable.innerHTML += `<div onclick="openItem(${id})" class="table-container non-fixed-height tree-link ${first}"><table class="credits-table"><tr><td class="no-select"><img src="${row.previewIcon}"></td><td class="no-select">${row.title}, ${row.year}</td></tr></table></div>`;
+        });
+        backToTop.style.display =
+          numberOfPublishedProjects > 3 ? "block" : "none";
+        backToTop.querySelector("img").src = backTopIcon;
+        endLoading();
+      };
+
+      dripfeed.addEventListener("click", () => {
+        openSection("Dripfeed");
+      });
+
+      performance.addEventListener("click", () => {
+        openSection("Performance");
+      });
+
+      //-----------------------------------------------------------
+      // Opening an Item
+      //-----------------------------------------------------------
+
+      const setHeader = (id) => {
+        const row = sectionData[id];
+        header.innerHTML = `<a onclick="backToSection()"><</a> <h1 class="no-select">${row.title}</h1>`;
+        container.style.background = row.pageColor;
+      };
+
+      const setMainImage = (id) => {
+        const row = sectionData[id];
+        main.classList.remove("chapter-image");
+        main.classList.add("video-thumb");
+        main.innerHTML = `<img class="main-image" onclick="scrollToBottom()" src="${row.mainImage}"><div onclick="scrollToBottom()" class="gallery-quick-link">Images ↓</div>`;
+        mainCaption.style.display = row.mainImageCaption ? "block" : "none";
+        mainCaption.innerHTML = row.mainImageCaption;
+      };
+
+      const createProjectTable = (id) => {
+        const row = sectionData[id];
+        const excludedKeys = [
+          "mainImage",
+          "flickrID",
+          "photoIcon",
+          "playIcon",
+          "sectionInfo",
+          "sectionIcon",
+          "previewIcon",
+          "pageColor",
+          "rightIconName",
+          "leftIconName",
+          "flickrId",
+          "pictureFrame",
+          "sectionName",
+          "mainImageCaption",
+          "backTopIcon",
+          "starIcon",
+          "published",
+          "quote",
+        ];
+        const tableRows = Object.entries(row)
+          .filter(([key]) => !excludedKeys.includes(key))
+          .map(([key, value]) => {
+            if (value !== "") {
+              return `<tr><td class="${key === "***" ? "stars" : "no-select"}">${key}</td><td>${value} ${
+                key === "screenings"
+                  ? "<br><br>*Contact us for screening inquires*"
+                  : ""
+              }</td></tr>`;
+            }
+          });
+        projectTable.innerHTML = tableRows.join("");
+        if (row.starIcon !== "") {
+          document.querySelector(".stars").innerHTML =
+            `<img style="width:50px;height:50px;mix-blend-mode:multiply;text-align:center" src="${row.starIcon}">`;
+        }
+      };
+
+      const setProjectButtons = (id) => {
+        const row = sectionData[id];
+        const flickrID = String(row.flickrId);
+        currentSetID = flickrID;
+        projectButtons.innerHTML = `<a><div class="icon-wrapper photos-icon one-icon" onclick="openGallery(${id})">
+<img src="${row.photoIcon}">
+<label>${sectionData[0].leftIconName}</label>
+
+</div></a>`;
+        projectButtons.style.display = "block";
+      };
+
+      const openItem = (id) => {
+        startLoading();
+        jumpToTop();
+        setHeader(id);
+        setMainImage(id);
+        createProjectTable(id);
+        setProjectButtons(id);
+        backToTop.style.display = "none";
+        projectTableContainer.style.display = "block";
+        creditsTable.style.display = "none";
+        article.innerHTML = ``;
+        article.style.display = sectionData[id].quote ? "block" : "none";
+        endLoading();
+      };
+
+      //-----------------------------------------------------------
+      // Going Back
+      //-----------------------------------------------------------
+
+      const backToHomepage = () => {
+        console.log("backToHomepage");
+        startLoading();
+        section = "";
+        creditsTable.style.display = "none";
+        aboutContact.style.display = "block";
+        creditsTable.innerHTML = "";
+        article.style.display = "none";
+        projectTable.innerHTML = "";
+        projectTableContainer.style.display = "none";
+        main.classList = "main-image";
+        main.innerHTML = `<img class="main-image" src="${initData[0].homeImage}">`;
+        header.innerHTML = `<img src="${initData[0].homeLogo}">`;
+        nav.style.display = "block";
+        newsTableContainer.style.display = "block";
+        backToTop.querySelector("img").src = initData[0].backTopIcon;
+        endLoading();
+      };
+
+      const backToSection = () => {
+        mainCaption.style.display = "none";
+        container.style.background = "none";
+        backToTop.style.display = "block";
+        projectButtons.style.display = "none";
+        projectButtons.innerHTML = "";
+        projectTableContainer.style.display = "none";
+        creditsTable.innerHTML = "";
+        projectTable.innerHTML = "";
+        article.innerHTML = ``;
+        projectabout.style.display = "none";
+        openSection(section);
+      };
+      const backToItem = (id) => {
+        inGallery = false;
+        container.style.background = "none";
+        backToTop.style.display = "block";
+        projectButtons.style.display = "none";
+        galleryBackground.style.display = "none";
+        main.style.display = "flex";
+        projectButtons.innerHTML = "";
+        projectTableContainer.style.display = "none";
+        footer.style.display = "block";
+        creditsTable.innerHTML = "";
+        projectTable.innerHTML = "";
+
+        // Restore the main header and hide gallery header
+        header.style.display = "flex";
+        let galleryHeader = galleryBackground.querySelector("header");
+        if (galleryHeader) {
+          galleryHeader.innerHTML = ""; // Remove gallery header content
+        }
+
+        clearInterval(loadingMessage);
+        openItem(id);
+      };
+
+      //-----------------------------------------------------------
+      // Open Image Gallery
+      //-----------------------------------------------------------
+      const openGallery = (id) => {
+        let inGallery = true;
+        startLoading();
+        jumpToTop();
+        const row = sectionData[id];
+
+        if (mobile) {
+          document.querySelector("body").style.background = row.pageColor;
+        }
+
+        // Hide non-gallery elements
+        backToTop.style.display = "none";
+        projectTableContainer.style.display = "none";
+        projectButtons.style.display = "none";
+        footer.style.display = "none";
+        article.style.display = "none";
+        projectabout.style.display = "none";
+        main.style.display = "none";
+        mainCaption.style.display = "none";
+
+        // Hide the main header and show gallery header
+        header.style.display = "none";
+        galleryBackground.style.display = "block";
+
+        // Add a new header inside galleryBackground if it doesn't exist
+        let galleryHeader = galleryBackground.querySelector("header");
+        if (!galleryHeader) {
+          galleryHeader = document.createElement("header");
+          galleryBackground.prepend(galleryHeader);
+        }
+
+        // Add back button inside gallery header
+        galleryHeader.innerHTML = `<a onclick="backToItem(${id})"><</a> <h1>${row.title}</h1>`;
+
+        // Build a table for the gallery
+        wall.innerHTML = `<table class="gallery-table"><tbody></tbody></table>`;
+        const tbody = wall.querySelector(".gallery-table tbody");
+
+        const flickrUrl = `https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=33b1525f178622d99e32791cc5a20ae5&photoset_id=${currentSetID}&user_id=9467505%40N08&format=json&nojsoncallback=1`;
+
+        fetch(flickrUrl)
+          .then((res) => res.json())
+          .then((data) => {
+            const photos = data.photoset.photo;
+            const setLength = photos.length;
+            let currentIndex = 0;
+            let currentRow = document.createElement("tr");
+
+            const loadNextPhoto = () => {
+              if (!inGallery) return;
+              if (currentIndex >= setLength) {
+                if (currentRow.children.length > 0) {
+                  tbody.appendChild(currentRow);
+                }
+                galleryBackground.style.display = "block";
+
+                if (mobile) {
+                  document.querySelector("body").style.background = "white";
+                }
+                endLoading();
+                return;
+              }
+
+              let photoData = photos[currentIndex];
+              const photoURL = `https://live.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}_${photosize}.jpg`;
+              const img = document.createElement("img");
+              img.src = photoURL;
+
+              img.onload = () => {
+                const td = document.createElement("td");
+                td.appendChild(img);
+                currentRow.appendChild(td);
+                if (currentRow.children.length === 1) {
+                  tbody.appendChild(currentRow);
+                  currentRow = document.createElement("tr");
+                }
+                currentIndex++;
+                loadNextPhoto();
+              };
+
+              img.onerror = () => {
+                currentIndex++;
+                loadNextPhoto();
+              };
+            };
+
+            loadNextPhoto();
+          })
+          .catch((err) => console.error(err));
+      };
+
+      // -------------------
+      // Hash Change Event
+      // -------------------
+
+      /*window.addEventListener('hashchange', function() {
+  let section = window.location.hash.substr(1); // Get the section name from the hash
+
+  // If there's a section name, open the section
+  if (section) {
+    openSection(section);
+  } else {
+    // If there's no section name, the hash was removed, so display the homepage state
+    displayHomepageState();
+  }
+}, false);
+*/
+      const init = async () => {
+        try {
+          scrollToTop();
+          startLoading();
+          initData = await loadData(`${BASE_DATA_URL}Settings`);
+          loadHomepageImgSequence();
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      init();
+    </script>
+  </body>
+</html>

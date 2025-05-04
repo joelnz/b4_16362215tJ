@@ -174,33 +174,41 @@
         });
     };
 
-    const code = document.querySelector(".code");
-    const form = document.querySelector("form");
-    form.style.display = "block";
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      $.ajax({
-        url: "../code.php",
-        type: "POST",
-        dataType: "text",
-        data: { data: [code.value, "x"] },
-        success: function (response) {
-          console.log(response);
-          if (response === "Incorrect code" || response === "Unknown episode") {
-            code.value = "";
-            code.classList.add("error");
-            code.placeholder = "Code incorrect";
-            code.blur();
-            setTimeout(() => {
-              code.placeholder = "Enter the code";
-              code.classList.remove("error");
-            }, 1000);
-          } else {
-            init(response);
-            form.remove();
-          }
-        },
-      });
+const code = document.querySelector(".code");
+  const form = document.querySelector("form");
+  const WS_URL = "https://script.google.com/macros/s/AKfycbxMVtMb4z1cby1UWy4jnF9-lzfAEUfBUKDKtkEZRcUgLDVvAhrrU4jCGJgbFL5R65-V/exec"; 
+  const SHEET_KEY = "x";  // same “key” you used in your PHP
+
+  form.style.display = "block";
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    // send JSON {password, key} instead of form-data
+    const res = await fetch(WS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        password: code.value,
+        key:      SHEET_KEY
+      })
     });
+    const text = await res.text();
+    console.log(text);
+
+    if (text === "Incorrect code" || text === "Unknown") {
+      // same error UI
+      code.value = "";
+      code.classList.add("error");
+      code.placeholder = "Code incorrect";
+      code.blur();
+      setTimeout(() => {
+        code.placeholder = "Enter the code";
+        code.classList.remove("error");
+      }, 1000);
+    } else {
+      // text is now your BASE_SHEET_URL
+      init(text);    // same as before
+      form.remove();
+    }
+  });
   </script>
 </html>

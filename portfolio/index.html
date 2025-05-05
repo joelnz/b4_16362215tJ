@@ -372,35 +372,44 @@
 
     const code = document.querySelector(".code");
     const form = document.querySelector("form");
+    const WS_URL =
+      "https://script.google.com/macros/s/AKfycbxMVtMb4z1cby1UWy4jnF9-lzfAEUfBUKDKtkEZRcUgLDVvAhrrU4jCGJgbFL5R65-V/exec";
+    const SHEET_KEY = "x";
+
     form.style.display = "block";
-
-    const ajaxRequest = (code) => {
-      $.ajax({
-        url: "../code.php",
-        type: "POST",
-        dataType: "text",
-        data: { data: [code, "x"] },
-        success: function (response) {
-          if (response === "Incorrect code" || response === "Unknown episode") {
-            code.value = "";
-            code.classList.add("error");
-            code.placeholder = "Code incorrect";
-            code.blur();
-            setTimeout(() => {
-              code.placeholder = "Enter the code";
-              code.classList.remove("error");
-            }, 1000);
-          } else {
-            init(response);
-            form.remove();
-          }
-        },
-      });
-    };
-
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      ajaxRequest(code.value);
+
+      // build the JSON payload
+      const payload = JSON.stringify({
+        password: code.value,
+        key: SHEET_KEY,
+      });
+
+      // send a “simple” POST (no custom headers) so no preflight is triggered
+      const res = await fetch(WS_URL, {
+        method: "POST",
+        body: payload,
+      });
+
+      const text = await res.text();
+      console.log(text);
+
+      if (text === "Incorrect code" || text === "Unknown") {
+        // error UI (same as before)
+        code.value = "";
+        code.classList.add("error");
+        code.placeholder = "Code incorrect";
+        code.blur();
+        setTimeout(() => {
+          code.placeholder = "Enter the code";
+          code.classList.remove("error");
+        }, 1000);
+      } else {
+        // success: `text` is the sheet URL
+        init(text);
+        form.remove();
+      }
     });
   </script>
 </html>

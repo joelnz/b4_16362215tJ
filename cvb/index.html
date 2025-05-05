@@ -222,44 +222,50 @@
 
     const code = document.querySelector(".code");
     const form = document.querySelector("form");
-    const WS_URL =
-      "https://script.google.com/macros/s/AKfycbxMVtMb4z1cby1UWy4jnF9-lzfAEUfBUKDKtkEZRcUgLDVvAhrrU4jCGJgbFL5R65-V/exec";
-    const SHEET_KEY = "x";
-
     form.style.display = "block";
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const WS_URL =
+  "https://script.google.com/macros/s/AKfycbxMVtMb4z1cby1UWy4jnF9-lzfAEUfBUKDKtkEZRcUgLDVvAhrrU4jCGJgbFL5R65-V/exec";
+const SHEET_KEY = "x";
 
-      // build the JSON payload
-      const payload = JSON.stringify({
-        password: code.value,
-        key: SHEET_KEY,
-      });
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      // send a “simple” POST (no custom headers) so no preflight is triggered
-      const res = await fetch(WS_URL, {
-        method: "POST",
-        body: payload,
-      });
+  const payload = JSON.stringify({
+    password: code.value,
+    key: SHEET_KEY,
+  });
 
-      const text = await res.text();
-      console.log(text);
+  const btn = form.querySelector("button");
+  btn.disabled = true;
+  btn.textContent = "Checking…";
 
-      if (text === "Incorrect code" || text === "Unknown") {
-        // error UI (same as before)
-        code.value = "";
-        code.classList.add("error");
-        code.placeholder = "Code incorrect";
-        code.blur();
-        setTimeout(() => {
-          code.placeholder = "Enter the code";
-          code.classList.remove("error");
-        }, 1000);
-      } else {
-        // success: `text` is the sheet URL
-        init(text);
-        form.remove();
-      }
-    });
+  try {
+    const res = await fetch(WS_URL, { method: "POST", body: payload });
+    const text = await res.text();
+    console.log("GAS response:", text);
+
+    if (text === "Incorrect code" || text === "Unknown") {
+      code.value = "";
+      code.classList.add("error");
+      code.placeholder = "Code incorrect";
+      code.blur();
+      setTimeout(() => {
+        code.placeholder = "Enter the code";
+        code.classList.remove("error");
+      }, 1000);
+    } else {
+      // text is base OpenSheet URL — append sheet/tab names
+      init(text, "CV", left);
+      init(text, "CVJ", right);
+      form.remove();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Network error. Try again?");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Unlock";
+  }
+});
   </script>
 </html>

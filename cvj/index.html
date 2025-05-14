@@ -132,7 +132,7 @@
               nameEl.innerHTML = name;
               const sendEl = document.createElement("p");
               sendEl.innerHTML =
-                send + "&#64" + reverseString(provider) + "." + domain;
+                send + "&#64" + reverseString(provider) + "." + domain + "<br>Instagram: @jp.cocks";
               section.append(image);
               section.append(nameEl);
               section.append(sendEl);
@@ -145,7 +145,7 @@
             } else {
               const cvEntry = document.createElement("p");
 
-              const year = data[i]["year"] ? `${data[i]["year"]}  ` : ``;
+             /* const year = data[i]["year"] ? `${data[i]["year"]}  ` : ``;
               const title = data[i]["title"]
                 ? `<em>${data[i]["title"]}</em>, `
                 : ``;
@@ -167,8 +167,18 @@
                 artist +
                 festivalOrProgram +
                 city;
-              section.append(cvEntry);
+              section.append(cvEntry);*/
+              const year = data[i]["year"] ? `${data[i]["year"]}  ` : ``;
+ const title = data[i]["title"]
+                ? `${data[i]["title"]}.`
+                : ``;
+
+cvEntry.innerHTML = year + title;
+  section.append(cvEntry);
             }
+
+
+
           }
         });
     };

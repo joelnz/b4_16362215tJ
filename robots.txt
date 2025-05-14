@@ -1,10 +1,13 @@
 # www.robotstxt.org/
 
-
 User-agent: *
-Disallow: /archived/
 Disallow: /help/
 Disallow: /photos/
-Disallow: /cv-joel/
-Disallow: /cv-both/
+Disallow: /cvj/
+Disallow: /cv/
+Disallow: /dripfeedpdf/
+Disallow: /cvb/
 Disallow: /portfolio/
+
+User-agent: ia_archiver
+Disallow: /
